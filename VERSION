@@ -1,0 +1,67 @@
+21st Jun 2005 Version 1.17
+	Minor fixes to improve error reporting
+
+2nd  Jul 2004 Version 1.16
+	Updated introspection code.  
+	Buxfixes for some minor problems.
+
+21st Apr 2004 Version 1.15
+	Minor bug fixes, performance improvements and
+	'elsif' keyword added.
+
+5th  Feb 2004 Version 1.14
+	Fixed operator priority bug in version 1.13
+
+13th Jan 2004 Version 1.13
+	Bug fixes in expression parsing.
+	Improved mismatched quote detection
+	Performance improvements
+
+8th  Jun 2003 Version 1.12
+	\\ can now be used in strings for \
+	Pluggable exception handling in FSReflectionExtension
+	Bugfixes, and improved bracket and quote mismatch detection
+
+8th  Feb 2003 Version 1.11
+	FScript.evaluateExpression method added.
+	Updated documentation.
+	Merged contributed bug fixes.
+
+14th Sep 2002 Version 1.1
+	New FSReflectionExtension adds Java object access.
+	New FSFastExtension provides new extension options.
+	New FSParserExtension provides advanced access to parser object.
+	'...' now treated as line continuation characters.
+	\r \n \t \" can now be used in strings to represent CR LF TAB and '"'.
+	
+
+14th May 2002 Version 1.00a
+	Documentation format change (no code changes)
+
+5th  May 2002 Version 1.00
+	Bug fixes (nested if bug and others).
+	LexAnn/Parser minor internal changes.
+	New set/getScriptVar callScriptFunction for access
+	to script level variables/functions.
+
+17th Sep 2001 Version 0.9
+	New extension functionality
+	Array like access to external variables
+	Single line if statement
+	Bug fixes
+
+16th Jun 2001 Version 0.81
+	Bug fix for problem with reset() method.
+
+7th  Feb 2001 Version 0.8
+	New expression parser (correct priorities).
+	Added support for 'double' type.
+	Improved document processing support.
+	Some internal cleanup.
+	Made LexAnn class private (why was it public anyway?)
+
+24th Nov 2000 Version 0.5
+	Major cleanup of internal code. 50% performance improvement.
+	
+26th Aug 2000 Version 0.4
+	Initial 'stable' Version.

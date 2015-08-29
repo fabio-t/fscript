@@ -1,0 +1,19 @@
+###Script for set/get script variable and callScriptFunction
+
+##This function called from java
+func sayHello(int times)
+
+	int a
+	while a<=times
+		println(text)
+		a=a+1
+	endwhile
+endfunc
+
+##This variable set from Java
+string text
+
+##This variable read from Java
+string response
+
+response="Hi Earth..."

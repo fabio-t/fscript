@@ -1,0 +1,204 @@
+<html>
+<head><title>Driving FScript</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="style"/>
+</head>
+<body>
+<center><h2>FScript</h2>
+<i>by murlen</i>
+</center>
+<a href="page4.html">[Previous]</a>&nbsp;<a href="index.html">[Contents]</a>&nbsp;<a href="page6.html">[Next]</a><hr></hr>
+
+<h2>Driving FScript</h2>
+
+
+<a name="link0"></a><h4>Using FScript in your code</h4>
+
+<p>A number of methods exist to enable your application to load FScript code into FScript, and
+have FScript execute it.  These are:
+<li>load</li>
+
+<li>loadLine</li>
+
+<li>run</li>
+
+<li>reset</li>
+
+<li>cont</li>
+
+<li>getError</li>
+</p>
+
+
+<p><b>load</b>
+</p>
+
+<p>The <i>load</i>
+ method is used to load a complete FScript source from a Reader.  This is the
+technique used by FSTest.java.  </p>
+
+
+<p><b>loadLine</b>
+</p>
+
+<p><i>loadLine</i>
+ loads one line (as a String) at a time into FScript.  
+This is the technique used by theDocProc.java example.</p>
+
+
+<p><b>run</b>
+</p>
+
+<p>This method executes the loaded FScript code (from the start of the code to the end).  If any
+errors are encountered it will throw a FSException.  The method <i>getError</i>
+ could then
+be called to gain more error information if necessary</p>
+
+<p>If there is a <i>return</i>
+ statement in the top level of the executed FScript, <i>run</i>
+
+will return the value specified in the <i>return</i>
+ statement (either an Integer, String or Double).
+</p>
+
+<p><b>reset</b>
+</p>
+
+<p>This method resets FScript - removing any previously loaded code.</p>
+
+
+<p><b>cont</b>
+</p>
+
+<p>This method continues execution of fscript from the current code position to the end of
+the script</p>
+
+<p>This is useful for document processing applications where code such as :</p>
+
+<pre>
+
+	fscript.loadLine(line[1]);
+	fscript.loadLine(line[2]);
+	...
+	fscript.run();
+	fscript.loadLine(line[19]);
+	fscript.loadLine(line[20]);
+	...
+	fscript.cont();
+</pre>
+
+<p>In the above example the call to <i>cont</i>
+ simply restarts execution at the end
+of the previous run, and continues to the (current) end of the script.  It is safe to use
+<i>cont</i>
+ as your first call to execute code, so in the above example the first <i>run</i>
+
+could just have well have been a <i>cont</i>
+.</p>
+
+<p>If there is a <i>return</i>
+ statement in the top level of the executed FScript, <i>cont</i>
+
+will return the value specified in the <i>return</i>
+ statement (either an Integer, String or Double).
+</p>
+
+
+<p><b>evaluateExpression</b>
+</p>
+
+<p>This method returns the result of evaluating the FScript expression passed as a string.
+If a script has previously been loaded and run, this expression is evaluated in the context
+of the previous script, so variables and functions defined in the script will be available.</p>
+
+<p>For example if no previous script had been run and
+<pre>fs.evaluateExpression("1+2+3")</pre>
+
+was called, it would return an <i>Integer</i>
+ with a value of 6</p>
+
+<p>However if a previous script had defined <i>int</i>
+ variables 'a' and 'b' with values
+4 and 3 then 
+<pre>fs.evaluateExpression("a+b-2")</pre>
+
+would return an <i>Integer</i>
+ with a value of 5</p>
+
+
+<p><b>getError</b>
+</p>
+
+<p>See the JavaDoc for full details of get error.  This method returns more information about
+a FSException condition - this is the same information available in the message of an FSException
+ but structured to make it easy to process programatically.</p>
+
+
+
+<a name="link1"></a><h4>Accessing Script Variables/Functions</h4>
+
+<p>As of FScript version 1.0 it is possible for the host application to access
+FScript level variables and functions. There is an example showing this
+in the <i>examples</i>
+ directory. Note that these functions will only work
+<b>after</b>
+ the script has been executed (via <i>run</i>
+ or<i>cont</i>
+).  In 
+in some cases it may make sense to have a script only containing functions and
+global variable declarations, and then manipulate these via the methods
+described below.</p>
+
+<p>There are three methods provided to allow access:
+<ul>
+<li>callScriptFunction</li>
+
+<li>setScriptVar</li>
+
+<li>getScriptVar</li>
+
+</ul>
+</p>
+
+<p><b>callScriptFunction</b>
+</p>
+
+<p>callScript function executes a FSCript function, it takes two parameters,
+the name of the function (a String) and a list of parameters (an ArrayList).
+In order for the call to succeed the function with the name (case sensitive)
+must exist and there must be the correct number and type of parameters (in
+the same order they were defined).  The return value is the returned Object
+(if any).</p>
+
+<p><b>set/getScriptVar</b>
+</p>
+
+<p>These functions allow access to script level variables.  getScriptVar returns
+the Object which is associated with the script level variable with the name that
+is passed as a parameter.  setScriptVar sets the script level variable with
+the name passed as a parameter to the given Object.
+</p>
+
+<p><b>Notes</b>
+</p>
+
+<p>As with all FScript methods the Object parameters are restricted to the 
+subset supported by FScript itself (currently String, Integer and Double).
+It is also important to note that if a call is made to any of these methods
+with the name of a variable/function that is not defined by the script, FScript
+will behave <b>exactly</b>
+ as it would if that call had been made from within
+a script and make calls to getVar/setVar/callFunction.  This could be especially
+problematic if the script access calls are made from within one of the handler
+methods (getVar/setVar/callFunction).</p>
+
+
+
+
+<hr></hr>
+<a href="page4.html">[Previous]</a>&nbsp;<a href="index.html">[Contents]</a>&nbsp;<a href="page6.html">[Next]</a><br></br>
+<i><font size="-2">created with DocLite</font>
+</i>
+
+
+</body>
+</html>

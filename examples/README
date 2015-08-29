@@ -1,0 +1,20 @@
+Some simple examples, a correctly set classpath (pointing to FScript.jar) 
+will help with compiling and running.
+
+All examples are also covered by LGPL (see ../COPYING).
+
+Current examples:
+
+processing/Processing.java - simple document processing with FScript 
+	(to run - java Processing processing.script).
+
+extension/ExtensionExample.java - simple example of an FScript Extension 
+	(to run - java ExtensionExample extension.script).
+
+callfunc/CallFunc.java - example of use of get/getScriptVar and
+	callScriptFunction
+	(to run - java CallFunc)
+
+objects/Object.java - example of using the FSReflectionExtension 
+	to access Java objects
+	(to run - java Objects)

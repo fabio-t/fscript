@@ -1,0 +1,244 @@
+<html>
+<head><title>Java Objects</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="style"/>
+</head>
+<body>
+<center><h2>FScript</h2>
+<i>by murlen</i>
+</center>
+<a href="page5.html">[Previous]</a>&nbsp;<a href="index.html">[Contents]</a>&nbsp;<a href="page7.html">[Next]</a><hr></hr>
+
+<h2>Java Objects</h2>
+
+
+<a name="link0"></a><h4>Basics</h4>
+
+<p>As of version 1.1 FScript has the ability to access Java objects.  This is 
+done by registering an instance of the FSReflectionExtension class.  An example 
+of this is in the <i>examples/objects/Objects.java</i>
+ file:
+<pre>
+		FSReflectionExtension fe=new FSReflectionExtension();
+		BasicIO fs=new BasicIO();
+
+		fs.registerExtension(fe);
+
+		fs.load(new FileReader("objects.script"));
+		fs.run();	
+</pre>
+
+</p>
+
+<p>By registering a <i>FSReflectionExtension</i>
+ the following functions become available within
+FScript:
+<li><i>create</i>
+ which creates a new instance of a Java object.</li>
+
+<li><i>getClass</i>
+ which gets a reference to a Java class (allowing you to use static 
+methods/fields)</li>
+<br></br>
+
+For example:
+<pre>
+	object system,map
+	system=getClass("java.lang.System")
+	map=create("java.util.HashMap")
+</pre>
+
+</p>
+
+
+
+<a name="link1"></a><h4>The object type</h4>
+
+<p>The <i>object</i>
+ type is a special type used in FScript to contain objects.  There are a few
+rules governing it's use.
+<li>An uninitialized variable may be set to any object (either external or one of FScripts own types). e.g:
+<pre>
+	object obj1,obj2
+	obj1=create("java.util.ArrayList")
+	obj2="This is a string"
+</pre>
+</li>
+
+<li>An object can only be re-assigned with an object of the same type so, continuing from above
+<pre>
+	obj2="This is another string"
+</pre>
+
+Would be valid, but:
+<pre>
+	obj2=obj1
+</pre>
+
+would not.</li>
+<br></br>
+
+<li>An object variable can be cleared by assigning it the keyword <i>null</i>
+.  Thus the only way
+to re-assign an object variable to a different type is to set it to <i>null</i>
+ first e.g:
+<pre>
+	obj2=null
+	obj2=obj1
+</pre>
+</li>
+
+</p>
+
+<p>The <i>object</i>
+ type can be used outside of the context of <i>FSReflectionExtension</i>
+.
+The <i>object</i>
+ type is implemented using the <i>FSObject</i>
+ wrapper class, so any 
+extension/subclass is free to return a <i>FSObject</i>
+ and have it handled internally within
+FScript as a <i>object</i>
+ in much the same way as Integer,Double and String currently work.
+</p>
+
+
+
+<a name="link2"></a><h4>Using objects</h4>
+
+<p>Once an object has been created it can be accessed from FScript in a similar manner to which 
+it can be accessed in Java.  Methods can be called, and fields read and set.  
+For example (taken from objects.script in the examples directory):
+<pre>
+	object map,obj
+	map=create("java.util.HashMap")
+	map.put("a","Apple")
+	map.put("b","Bear")
+	map.put("c","Car")
+	map.put("d","Demolition")
+
+
+	#Create out test object
+	obj=create("TestObject")
+	obj.testMethod()
+	out.println(obj.stringField)
+	out.println(obj.intField)
+	out.println(obj.intMethod("5551212"))
+
+	#Set a field using explicit call
+	obj.setValue("Test value for object")
+	#But we could do this which is equiv to the setValue call
+	#obj.Value="Test value for object" 
+
+	#get value using the implicit getter
+	out.println(obj.Value)
+	#however we could have done this
+	#out.println(obj.getValue())
+</pre>
+
+</p>
+
+<p>As can be seen from the above code the <i>FSReflectionExtension</i>
+ class also provides some
+support for Bean like getters and setters - i.e a line of the type:
+<pre>
+	myObj.Amount=12
+</pre>
+
+If no amount field exists, this call is converted internally to:
+<pre>
+	myObj.setAmount(12)
+</pre>
+
+A similar process takes place with assignment, with:
+<pre>
+	intValue=myObj.Amount
+</pre>
+
+potentially becoming:
+<pre>
+	intValue=myObj.getAmount()
+</pre>
+
+</p>
+
+
+<a name="link3"></a><h4>Exceptions</h4>
+
+<p>
+It is possible to use a custom exception handler for calls to methods of objects created
+by the <i>FSReflectionExtension</i>
+.  This exception handler will only be called for exceptions
+thrown from <b>within</b>
+ the method called, not for exceptions caused by problems with parameters
+or method names.  This can be done using the <i>setExceptionHandler</i>
+ method of 
+<i>FSReflectionExtension</i>
+.
+</p>
+
+
+
+
+<a name="link4"></a><h4>Limitations</h4>
+
+<p>There are some limitations of <i>FSReflectionExtension</i>
+ however.  It is only simple 
+to work with for parameter types etc. that are supported by FScript (Integer, Double and String), 
+although this limitation can be worked around a little by using the <i>object</i>
+ type 
+in FScript for parameters too.</p>
+
+<p>Only one level of indirection (dots) are allowed e.g.
+<pre>
+	object sys
+	sys=getClass("java.lang.System")
+
+	sys.out.println("Hello")
+</pre>
+
+Will fail at <i>sys.out.println("Hello")</i>
+. The solution to this is to recode like:
+<pre>
+	object sys,out
+	sys=getClass("java.lang.System")
+	out=sys.out
+	out.println("Hello")
+</pre>
+
+Which is a little cumbersome, but works.
+</p>
+
+
+
+<a name="link5"></a><h4>FSReflectionExtension</h4>
+
+<p>As <i>FSReflectionExtension</i>
+ is an extension, rather than being directly 
+built into FScript it would be possible to write a replacement or enhancement 
+for the extension. <i>FSReflectionExtension</i>
+ makes use of the 
+<i>FSParserExtension</i>
+interface.  This interface is simply an extension of 
+the <i>FSExtension</i>
+ interface which ensures that implementers are passed
+a reference to the current <i>Parser</i>
+ class.  It would be wise to study
+the source for the <i>FSReflectionExtension</i>
+ before attempting to code
+an extension/replacement. </p>
+
+<p>Also note that the FSReflection extension makes use of code from the 
+Apache Velocity project, which is under the Apache license.  This is 
+stated in the relevant files (murlen.util.fscript.introspection.*).</p>
+
+
+
+
+<hr></hr>
+<a href="page5.html">[Previous]</a>&nbsp;<a href="index.html">[Contents]</a>&nbsp;<a href="page7.html">[Next]</a><br></br>
+<i><font size="-2">created with DocLite</font>
+</i>
+
+
+</body>
+</html>

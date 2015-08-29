@@ -1,0 +1,723 @@
+<doclite name="FScript">
+
+<page name="Introduction">
+
+<header>
+	<center><h2>_TITLE_</h2><i>by murlen</i></center>_NAVIGATE_<hr/>
+</header>
+
+<footer>
+	<hr/>_NAVIGATE_<br/><i><font size="-2">created with DocLite</font></i>
+</footer>
+
+<section name="What is FScript?">
+<p>FScript is an extremely simple scripting language.  
+Its intended use is as an embedded language in other Java programs. It is
+very simple to embed - it can be a matter of sub-classing one class and adding your
+own functionality. However is not a complete programming language, i.e no 
+libraries (for IO etc.) are provided. These are expected to be provided by the
+hosting application.</p>
+<p>For a complete language I suggest you look at:</p>
+<p>
+
+	<a href="http://www.jython.org">jython</a> - an implementation of 
+	the excellent Python language in Java.<br/>
+
+	<a href="http://www.mozilla.org/rhino">Rhino</a> - an implementation
+				of JavaScript in Java.<br/>
+</p>
+<p>Both of these are also fully embeddable, and have sane licenses.</p>
+<p>FScript however is around 50k as a jar file, and is only a few thousand
+lines of source.  So if the functionality you are looking for is more
+than a simple configuration file parser, but less than a full blown programming
+language FScript could be for you.</p>	
+<p>As of version 1.1 FScript has the ability to access Java objects directly.  
+That is it is possible to instance a Java object and access it's methods and fields
+from within a FScript script. This gives FScript a lot more power than it previously had.
+This feature is also modular and can be removed if not needed</p>
+</section>
+
+<section name="Features">
+<p>A quick rundown of FScript's features:
+<ul>
+<li>Three supported data types (string,integer,double)</li>
+<li>Conditional execution ('if' statements)</li>
+<li>Loops ('while')</li>
+<li>Functions (including recursive functions)</li>
+<li>Local &amp; global variable scope</li>
+<li>The usual range of logic and math operators.</li>
+<li>Simple to extend either by sub-classing or 'plug-in' like extensions</li>
+<li>Able to interact with Java objects.</li>
+</ul>
+</p>
+</section>
+
+<section name="Requirements">
+<p>
+The only requirement is a Java2 runtime environment.  An initial version of 
+FScript also exists for J2ME. For details so the FScript 
+<a href="http://fscript.sourceforge.net">web site</a></p>
+</section>
+</page>
+
+<page name="Installation">
+<section name="Installation">
+
+<p>FScript is supplied as a gzipped tar file.  Under a suitable Unix it 
+can be extracted with the command <i> tar -xvzf FScript.tgz </i> </p>
+
+<p> Windows users should find that a utility such as Winzip can handle 
+this file, but they may have to extract the tar file, rename it with a 
+.tar extension and then use Winzip (or the like) again</p>
+
+<p>FScript is a component that is not really useful as a stand alone language,
+hence the method of installation is typically up to you - the source files
+are located in the 'murlen' directory, the class files in the class directory, and
+there should be a .jar file suitable for inclusion in you CLASSPATH in the
+top level directory.  The documentation, including javadoc, is in the docs
+directory.</p>
+
+<p> <a href="http://jakarta.apache.org/ant">Ant</a> is the preferred build tool 
+for compiling the code (should you wish to do so).  There are a number of 
+targets:
+<br/>all - makes all source files (if needed)
+<br/>clean - removes class files
+<br/>jar - builds the jar file
+<br/>jdoc - rebuilds the javadoc
+<br/>test - runs java FSTest regtest.script (system self test)
+<br/>theworks - rebuilds everything (runs clean,all,jar,jdoc,test)
+</p>
+<p>There is also a Makefile, which currently has the same targets, but
+make is being phased out in favor of Ant, so in future versions the
+Makefile may not exist.</p>
+
+<p>There is a test FScript script (regtest.script) which is intended to 
+exercise most if not all of the language.  
+This can be executed by running <i> java FSTest regtest.script </i>.
+</p>
+<p>There are some (very simple) examples of FScript use in the 
+<i>examples</i> directory (and subdirectories).</p>	
+</section>
+</page>
+
+<page name="Language">
+<section name="Overview">
+<p>The FScript language is very simple it supports four data types int (Integer), 
+string (String), double (Double) and a special type object (see later for documentation
+on the 'object' type..
+The language is case sensitive, and both variables and functions need to be declared 
+before use.</p>
+</section>
+<section name="Comments">
+<p>In normal scripting language fashion comments are indicated by a
+ '#' - this may either start a line, in which case the entire line is regarded
+as a comment, or be placed anywhere in the line - in which case any characters
+after the '#' are ignored.</p>
+</section>
+<section name="Variable Declaration">
+<p>Variables must be declared before use, the syntax is :</p>
+	<pre>int|string|double &lt;varname&gt;[=&lt;expression&gt;][,&lt;varname&gt;*]</pre>
+<p>For example</p>
+<pre>
+	int counter,b,n
+	string name,address
+	double value
+</pre>
+<p>It is also possible to assign a value to a variable during 
+declaration (like java) for example:</p>
+<pre>
+	int counter=0,b,c
+	string link,path="/home/"+username+"/mydir",tmpstring
+</pre>
+<p>Variable names must start with A-Z or a-z, but numbers, "." and "_" can also used
+in variable names e.g</p>
+<pre>	int valid9_variable.name1</pre>
+</section>
+<section name="Strings">
+<p>Strings are enclosed in double quotes, and may contain the special tokens
+\n, \r, \t, \\ and \"to include a new line, carriage return, tab, backslash and double quote
+character respectively.</p>
+<p>Line continuation can be indicated by ... e.g.</p>
+<pre>
+	a=thisLongNamedVariable+thatLongNamedVariable/...
+	anotherLongNamedVariable
+</pre>
+</section>
+<section name="Conditional Execution">
+<p>The sole construct for conditional execution is the 'if' statement.</p>
+<p>There are two forms of 'if' statements, multi line and single line.
+Multi-line If statements may optionally contain 'elsif' and 'else'clauses.  
+The 'then' keyword is optional for the multi-line form of 'if' The syntax is :</p>
+<pre>
+	if &lt;expression&gt; [then]
+	&lt;statements&gt;
+	[else
+    	&lt;statements&gt;
+	]
+	[elsif &lt;expression&gt;
+	&lt;statements&gt;]
+	endif
+</pre>
+<p>For example</p>
+<pre>
+	if a&gt;300 
+		a=a-145
+		b=b+3
+	elsif a &gt; 500
+		a=a-245
+		b=b+4
+	else
+		a=a+10
+	endif
+</pre>
+<p>The single line form of 'if' is used if only one statement needs to be executed by the 'if'.
+There is no provision for 'else' or 'elsif' and the 'then' keyword is <b>not</b> optional.</p>
+<p>For example:</p>
+<pre>
+	if a&gt;300 then a=0
+</pre>
+<p>Note that both <i>elsif</i> and <i>elseif</i> are valid for use in <i>if</i> statements.</p>
+</section>
+<section name="Loops">
+<p>The only loop construct supported by FScript is while.  The syntax is :</p>
+<pre>
+	while &lt;expression&gt;
+                &lt;statements&gt;
+	endwhile
+</pre>
+<p>For example</p>
+<pre>
+	while count&lt;500
+		count=count+1
+		value=value+calcvalue(count)
+	endwhile
+</pre>
+</section>
+<section name="Functions">
+<p>FScript supports the declaration of functions that may return a
+parameter, and accept a pre-defined set of parameters.  Functions may
+be recursive.  It is not legal to nest functions in code (i.e. declare
+functions within functions).  Local variables may be declared within
+the function scope.  Within a function global scope variables are available,
+and in the event of a naming conflict between the global and local scope, the
+local scope wins. The 'return' keyword can be used to return a value to
+the calling code.<br/>
+The syntax of a function declaration is:
+</p>
+<pre>
+	func &lt;function name&gt;([[&lt;param type&gt; &lt;param name&gt;][,]]*)
+	&lt;statements&gt;
+	endfunc
+</pre>
+<p>For example</p>
+<pre>
+	func test(int a,string b,double c)
+		int count
+		while count&lt;10
+			count=count+1
+		endwhile
+		return count
+	endfunc
+</pre>
+</section>
+<section name="Arrays">
+<p>FScript does not directly support arrays, however it does support array like
+access to variables that are defined in extensions/subclasses of FScript 
+The syntax is the same as that found in Java (and C). e.g.</p>
+<pre>	&lt;varname&gt;[&lt;subscript&gt;] </pre>
+<p>However in FScript the subscript can be any supported variable type (string,int or
+even double - although I doubt that has many uses).</p>
+<p>For Example:</p>
+<pre>	
+	thisvar[n]=thatvar[2]
+	MyFunction(thisvar[n+1]) </pre>
+<p>In the above example the variables <i>thisvar</i> and <i>thatvar</i> are
+supplied by the application embedding FScript</p>
+</section>
+<section name="Operators">
+<p>The usual selection of math and logic operators are supported:<br/></p>
+<pre>+ - * / % == != &gt;= &lt;= &lt; &gt; &amp;&amp; || ! ( ) </pre>
+<p>As of FScript 0.8 operator priority is recognized so constructs
+like 3+4*7 will work as expected.</p>
+<p>Not all operators are valid for all types</p>
+<p>The mathematical operators (+ - * / %) are valid for 
+all numeric types. The operator + is also valid for string operands
+(which concatenates the strings).</p>
+<p>The equality &amp; inequality operators ( == !=) are valid for
+all types.  These operators yield an integer 1 or 0 as a result.  All
+logical operators use the 'C' convention of false being zero and 
+true being any non-zero value.</p>
+<p>The comparison operators ( &gt; &lt; &gt;= &lt;=) can be used to
+compare any type, again as long as both operands are the same type. 
+ The result is (again) a 1 or 0 integer.</p>
+<p>The boolean logic operators ( &amp;&amp; || ) work only with integer operands.</p>
+</section>
+<section name="Notes">
+ <p>Carriage returns are significant in FScript, so :</p>
+ <pre>
+	if a&gt;=100 a=100 endif</pre>
+  <p>will not work. </p>
+ <p>Also FScript is somewhat sensitive about the interpretation of numbers, 
+for example '15' will always be interpreted as an integer, and will cause an
+error if it is assigned to a double variable, use '15.0' to force the
+value to be interpreted as a double.</p>
+</section>
+</page>
+<page name="Embedding Fscript">
+<section name="Introduction">
+<p>
+FScript is intended to be embedded within other applications.  
+</p>
+<p>This can be done in three (count them, three) ways:</p>
+<ul>
+<li>Subclassing FScript and <a href="#subc">overriding</a> a number of key methods</li>
+<li>Implementing a separate <a href="#ext">extension</a> class and registering it with FScript</li>
+<li>Using the <a href="#fast">FSFastExtension</a> class and registering (simpler) extensions with it</li> 
+</ul>
+<p>The first method is the simplest, but the second provides much greater
+flexibility, as it is possible to register multiple extensions simultaneously.</p>
+<p>You will also need to know the various methods used to load code into FScript, and to 
+execute it.</p>
+</section>
+<section name="Subclassing FScript"><a name="subc"/>
+<p>This is done by simply sub-classing FScript class, and overriding a number of
+ key methods.  This resulting class is then used to process the FScript scripts. </p>
+<p>The BasicIO class can be examined to see how this is done.  The BasicIO class 
+provides (very basic) IO capabilities to FScript.  If correctly implemented (see below)
+such subclasses can themselves be subclassed to add further features.</p>
+<p>Also see the JavaDoc for more detailed information.</p>
+<p><b>Methods to Override</b></p>
+<p>There are 3 functions that you may override to integrate FScript with your
+application. These are:</p>
+<ul>
+<li>callFunction</li>
+<li>setVar (and setVar with index)</li>
+<li>getVar (and getVar with index)</li>
+</ul>
+<p><b>callFunction</b></p>
+<p><i>callFunction</i> is called whenever a function call is encountered in the script
+that has not been previously defined.  Hence allowing the application embedding FScript
+to appear to have functions mapped into FScript's name space. It is called with two parameters, 
+the first being the function name, and the second being an array list of parameters passed to the
+function from the script.</p> 
+<p>Typically this Method will perform the actions associated with the passed in function
+name, and perhaps return a value.  A returned value must be one of the FScript supported
+types (String, Integer and Double).</p>
+<p>If the function name does not match one your method is expecting, it is typically an error.  
+The preferred method of handling this is to call <i>super.callFunction</i>.  This makes it possible
+to 'chain' subclasses of FScript together (e.g. you could subclass BasicIO, add one function, and
+any calls you did not process would be handed back to BasicIO).  Although if you
+are doing this you may want to look at <a href="#ext">extensions</a></p> which
+could provide a simpler interface.
+<p>The <i>callFunction</i> method can only throw a FSException, so all exceptions generated by
+your code will need to be handled (if necessary by re-throwing as an FSException).  Any
+thrown FSException will be caught, and additional context information added, before being 
+re-thrown.</p>
+
+<p><b>setVar/getVar</b></p>
+<p>This method is called when a FScript variable name is encountered that has not
+been previously defined - hence allowing the application embedding FScript to 
+appear to have variables mapped into FScript's name space.</p>
+<p><i>setVar</i> is called with two parameters one being the variable name, and 
+the other being the value to which that 'variable' is to be set.  <i>getVar</i> is called
+only with a variable name, and the method is expected to return one of the Java types
+recognized by FScript (Integer, String and Double).</p>
+<p>As with <i>callFunction</i> if the variable name passed in is not one the embedding 
+application expects it should call <i>super.setVar / super.getVar </i>.  Also like <i>callFunction</i>
+only FSExceptions my be thrown by these methods.</p>
+<p>Both <i>setVar</i> and <i>getVar</i> have versions that also accept index parameters, this
+allows for array like access to variables defined in subclasses (see JavaDoc for 
+details).</p>
+</section>
+<section name="Using Extensions">
+<a name="ext"/>
+<p>A more flexible approach than subclassing is using extensions.  Any class wishing to register
+as an extension to FScript must implement the <i>FSExtension</i> interface.  This methods defined
+by this interface mirror the ones discussed above (<i>callFunction,getVar</i> and <i>setVar</i>).
+These methods will then be called when unknown variables or function names are encountered
+in a script.</p>
+<p>It is <b>vital</b> that if an extension receives a call for a function or variable name that
+is not implemented by this extension it <b>must</b> raise a <i>FSUnsupportedExtension</i>.
+This enables the call to be passed on to other extensions.  The only other exception that may
+be thrown is a <i>FSException</i> which is used to indicate an error condition.</p>
+<p>In order to register an extension with FScript the method <i>registerExtension</i> is called.  To
+remove an extension call <i>unRegisterExtension</i> (which may be important as FScript retains
+a reference to the extension, so it will not be garbage collected).</p>
+<p>The fragment of code below shows an example of extension use:</p>
+<pre>
+	FScript fs=new FScript();
+	MyDataBaseExtension db=new MyDataBaseExtension();
+	//register various extensions
+	fs.registerExtension(db);
+	fs.registerExtension(new MyIOExtension());
+	fs.registerExtensoin(new MyWebExtension());
+	
+	fs.load(inputFileReader);
+	
+	rs.run();
+	
+	//just because we can
+	fs.unRegisterExtension(db);
+</pre>
+<p>As the FScript class itself implements the FSExtension interface, any subclasses of FScript may
+also be used as FScript extensions - although this is probably not all that efficient.</p>
+<p>A class <i>BasicExtension</i> is provided that can be subclassed to simplify building extensions.,
+It simply implements <i>FSExtension</i> and all method calls throw a 
+<i>FSUnsupportedException.</i></p>
+</section>
+<section name="Using FSFastExtension">
+<a name="fast"></a>
+<p>
+The <i>FSFastExtension</i> class provides a way of creating even simpler extensions to FScript (i.e they 
+do not have to implement the whole <i>FSExtension</i> interface).  To use you register an instance of 
+FSFastExtension with the FScript parser, and then add extensions to the <i>FSFastExtension</i> instance.
+These extensions can implement <i>FSVarExtension</i>, <i>FSFunctionExtension</i> or <i>FSArrayExtension</i>,
+where these classes define the relevant methods for handling variables, functions or array type variables.  
+In fact the FSExtension interface is really just a compound of these three interfaces.
+</p>
+<p>
+The coding needed for these <i>FSFastExtension</i> classes is similar to that for subclasses and 
+extensions mentioned above.  See the examples directory for an example of <i>FSFastExtension</i> in use.
+</p>
+</section>
+</page>
+<page name="Driving FScript">
+<section name="Using FScript in your code">
+<p>A number of methods exist to enable your application to load FScript code into FScript, and
+have FScript execute it.  These are:
+<li>load</li>
+<li>loadLine</li>
+<li>run</li>
+<li>reset</li>
+<li>cont</li>
+<li>getError</li></p>
+
+<p><b>load</b></p>
+<p>The <i>load</i> method is used to load a complete FScript source from a Reader.  This is the
+technique used by FSTest.java.  </p>
+
+<p><b>loadLine</b></p>
+<p><i>loadLine</i> loads one line (as a String) at a time into FScript.  
+This is the technique used by theDocProc.java example.</p> 
+
+<p><b>run</b></p>
+<p>This method executes the loaded FScript code (from the start of the code to the end).  If any
+errors are encountered it will throw a FSException.  The method <i>getError</i> could then
+be called to gain more error information if necessary</p>
+<p>If there is a <i>return</i> statement in the top level of the executed FScript, <i>run</i> 
+will return the value specified in the <i>return</i> statement (either an Integer, String or Double).
+</p>
+<p><b>reset</b></p>
+<p>This method resets FScript - removing any previously loaded code.</p>
+
+<p><b>cont</b></p>
+<p>This method continues execution of fscript from the current code position to the end of
+the script</p>
+<p>This is useful for document processing applications where code such as :</p>
+<pre>
+
+	fscript.loadLine(line[1]);
+	fscript.loadLine(line[2]);
+	...
+	fscript.run();
+	fscript.loadLine(line[19]);
+	fscript.loadLine(line[20]);
+	...
+	fscript.cont();
+</pre>
+<p>In the above example the call to <i>cont</i> simply restarts execution at the end
+of the previous run, and continues to the (current) end of the script.  It is safe to use
+<i>cont</i> as your first call to execute code, so in the above example the first <i>run</i>
+could just have well have been a <i>cont</i>.</p>
+<p>If there is a <i>return</i> statement in the top level of the executed FScript, <i>cont</i> 
+will return the value specified in the <i>return</i> statement (either an Integer, String or Double).
+</p>
+
+<p><b>evaluateExpression</b></p>
+<p>This method returns the result of evaluating the FScript expression passed as a string.
+If a script has previously been loaded and run, this expression is evaluated in the context
+of the previous script, so variables and functions defined in the script will be available.</p>
+<p>For example if no previous script had been run and
+<pre>fs.evaluateExpression("1+2+3")</pre>
+was called, it would return an <i>Integer</i> with a value of 6</p>
+<p>However if a previous script had defined <i>int</i> variables 'a' and 'b' with values
+4 and 3 then 
+<pre>fs.evaluateExpression("a+b-2")</pre>
+would return an <i>Integer</i> with a value of 5</p>
+
+<p><b>getError</b></p>
+<p>See the JavaDoc for full details of get error.  This method returns more information about
+a FSException condition - this is the same information available in the message of an FSException
+ but structured to make it easy to process programatically.</p>
+</section>
+<section name="Accessing Script Variables/Functions">
+<p>As of FScript version 1.0 it is possible for the host application to access
+FScript level variables and functions. There is an example showing this
+in the <i>examples</i> directory. Note that these functions will only work
+ <b>after</b> the script has been executed (via <i>run</i> or<i>cont</i>).  In 
+in some cases it may make sense to have a script only containing functions and
+global variable declarations, and then manipulate these via the methods
+described below.</p>
+<p>There are three methods provided to allow access:
+<ul>
+<li>callScriptFunction</li>
+<li>setScriptVar</li>
+<li>getScriptVar</li>
+</ul></p>
+<p><b>callScriptFunction</b></p>
+<p>callScript function executes a FSCript function, it takes two parameters,
+the name of the function (a String) and a list of parameters (an ArrayList).
+In order for the call to succeed the function with the name (case sensitive)
+must exist and there must be the correct number and type of parameters (in
+the same order they were defined).  The return value is the returned Object
+(if any).</p>
+<p><b>set/getScriptVar</b></p>
+<p>These functions allow access to script level variables.  getScriptVar returns
+the Object which is associated with the script level variable with the name that
+is passed as a parameter.  setScriptVar sets the script level variable with
+the name passed as a parameter to the given Object.
+</p>
+<p><b>Notes</b></p>
+<p>As with all FScript methods the Object parameters are restricted to the 
+subset supported by FScript itself (currently String, Integer and Double).
+It is also important to note that if a call is made to any of these methods
+with the name of a variable/function that is not defined by the script, FScript
+will behave <b>exactly</b> as it would if that call had been made from within
+a script and make calls to getVar/setVar/callFunction.  This could be especially
+problematic if the script access calls are made from within one of the handler
+methods (getVar/setVar/callFunction).</p>
+</section>
+</page>
+<page name="Java Objects">
+<section name="Basics">
+<p>As of version 1.1 FScript has the ability to access Java objects.  This is 
+done by registering an instance of the FSReflectionExtension class.  An example 
+of this is in the <i>examples/objects/Objects.java</i> file:
+<pre>
+		FSReflectionExtension fe=new FSReflectionExtension();
+		BasicIO fs=new BasicIO();
+	
+		fs.registerExtension(fe);
+	
+		fs.load(new FileReader("objects.script"));
+		fs.run();	
+</pre>
+</p>
+<p>By registering a <i>FSReflectionExtension</i> the following functions become available within
+FScript:
+<li><i>create</i> which creates a new instance of a Java object.</li>
+<li><i>getClass</i> which gets a reference to a Java class (allowing you to use static 
+methods/fields)</li><br/>
+For example:
+<pre>
+	object system,map
+	system=getClass("java.lang.System")
+	map=create("java.util.HashMap")
+</pre>
+</p>
+</section>
+<section name="The object type">
+<p>The <i>object</i> type is a special type used in FScript to contain objects.  There are a few
+rules governing it's use.
+<li>An uninitialized variable may be set to any object (either external or one of FScripts own types). e.g:
+<pre>
+	object obj1,obj2
+	obj1=create("java.util.ArrayList")
+	obj2="This is a string"
+</pre></li>
+<li>An object can only be re-assigned with an object of the same type so, continuing from above
+<pre>
+	obj2="This is another string"
+</pre>
+Would be valid, but:
+<pre>
+	obj2=obj1
+</pre>
+would not.</li><br/>
+<li>An object variable can be cleared by assigning it the keyword <i>null</i>.  Thus the only way
+to re-assign an object variable to a different type is to set it to <i>null</i> first e.g:
+<pre>
+	obj2=null
+	obj2=obj1
+</pre></li>
+</p>
+<p>The <i>object</i> type can be used outside of the context of <i>FSReflectionExtension</i>.
+The <i>object</i> type is implemented using the <i>FSObject</i> wrapper class, so any 
+extension/subclass is free to return a <i>FSObject</i> and have it handled internally within
+FScript as a <i>object</i> in much the same way as Integer,Double and String currently work.
+</p>
+</section>
+<section name="Using objects">
+<p>Once an object has been created it can be accessed from FScript in a similar manner to which 
+it can be accessed in Java.  Methods can be called, and fields read and set.  
+For example (taken from objects.script in the examples directory):
+<pre>
+	object map,obj
+	map=create("java.util.HashMap")
+	map.put("a","Apple")
+	map.put("b","Bear")
+	map.put("c","Car")
+	map.put("d","Demolition")
+	
+
+	#Create out test object
+	obj=create("TestObject")
+	obj.testMethod()
+	out.println(obj.stringField)
+	out.println(obj.intField)
+	out.println(obj.intMethod("5551212"))
+	
+	#Set a field using explicit call
+	obj.setValue("Test value for object")
+	#But we could do this which is equiv to the setValue call
+	#obj.Value="Test value for object" 
+	
+	#get value using the implicit getter
+	out.println(obj.Value)
+	#however we could have done this
+	#out.println(obj.getValue())
+</pre>
+</p>
+<p>As can be seen from the above code the <i>FSReflectionExtension</i> class also provides some
+support for Bean like getters and setters - i.e a line of the type:
+<pre>
+	myObj.Amount=12
+</pre>
+If no amount field exists, this call is converted internally to:
+<pre>
+	myObj.setAmount(12)
+</pre>
+A similar process takes place with assignment, with:
+<pre>
+	intValue=myObj.Amount
+</pre>
+potentially becoming:
+<pre>
+	intValue=myObj.getAmount()
+</pre>
+</p>
+<section name="Exceptions">
+<p>
+It is possible to use a custom exception handler for calls to methods of objects created
+by the <i>FSReflectionExtension</i>.  This exception handler will only be called for exceptions
+thrown from <b>within</b> the method called, not for exceptions caused by problems with parameters
+or method names.  This can be done using the <i>setExceptionHandler</i> method of 
+<i>FSReflectionExtension</i>.
+</p>
+</section>
+</section>
+<section name="Limitations">
+<p>There are some limitations of <i>FSReflectionExtension</i> however.  It is only simple 
+to work with for parameter types etc. that are supported by FScript (Integer, Double and String), 
+although this limitation can be worked around a little by using the <i>object</i> type 
+in FScript for parameters too.</p>
+<p>Only one level of indirection (dots) are allowed e.g.
+<pre>
+	object sys
+	sys=getClass("java.lang.System")
+	
+	sys.out.println("Hello")
+</pre>
+Will fail at <i>sys.out.println("Hello")</i>. The solution to this is to recode like:
+<pre>
+	object sys,out
+	sys=getClass("java.lang.System")
+	out=sys.out
+	out.println("Hello")
+</pre>
+Which is a little cumbersome, but works.
+</p>
+</section>
+<section name="FSReflectionExtension">
+<p>As <i>FSReflectionExtension</i> is an extension, rather than being directly 
+built into FScript it would be possible to write a replacement or enhancement 
+for the extension. <i>FSReflectionExtension</i> makes use of the 
+<i>FSParserExtension</i>interface.  This interface is simply an extension of 
+the <i>FSExtension</i> interface which ensures that implementers are passed
+a reference to the current <i>Parser</i> class.  It would be wise to study
+the source for the <i>FSReflectionExtension</i> before attempting to code
+an extension/replacement. </p>
+<p>Also note that the FSReflection extension makes use of code from the 
+Apache Velocity project, which is under the Apache license.  This is 
+stated in the relevant files (murlen.util.fscript.introspection.*).</p>
+</section>
+</page>
+<page name="Miscellaneous">
+<section name="Homepage">
+<p>The official hompage of FScript is 
+<a href="http://fscript.sourceforge.net">here</a>.</p>
+<p>The SourceForge project page is 
+<a href="http://www.sourceforge.net/projects/fscript">here</a>.</p>
+</section>
+<section name="JavaDoc">
+<p>The <a href="doc/index.html">JavaDocs</a> are in the <i>docs/doc</i>
+directory.</p>
+</section>
+<section name="Slimming it down">
+<p>FScript is already pretty small, but it can be stripped down further if 
+needed.  Also note that by default the FScript.jar file is not compressed,
+so some size reduction is possible there too.</p>
+<p>
+The BasicIO and BasicExtension classes are only needed if you intend to use 
+them, and the FSReflectionExtension and related murlen.util.fscript.introspection.*
+classes can also be removed if this feature is not wanted.</p>
+<p>With some more code editing it would be possible to strip things down 
+still further.  However for a very minimalistic version FScriptME may be
+an option (also it is Java 1.1 and so will work within most browsers).
+</p>
+</section>
+<section name="Bugs">
+<p>The newest and hence most bug-prone feature in release 1.1 changes related
+to the <i>object</i> and new extension code.
+</p>
+<p>Any bugs or feature requests can be reported to me at: <br/>
+murlen (at to stop spam) users dot sourceforge dot net</p>
+<p>Or via the bug tracking on 
+<a href="http://www.sourceforge.net/projects/fscript">the project home page.
+</a></p> 
+<p>Note that email is probably going to get a faster response, as the project
+page is checked less frequently.</p>
+</section>
+</page>
+<page name="Keywords">
+<section name="FScript keywords">
+<p>The following are keywords of the FScript langauge and therefore cannot be 
+used in any other context:</p>
+<pre>
+	double
+	else
+	elseif
+	elsif
+	endfunc
+	endif
+	endwhile
+	func
+	if
+	int
+	null
+	object
+	return
+	string
+	then
+	while
+</pre>
+<p>The following are keywords that are defined in <i>FSReflectionExtension</i>:
+</p>
+<pre>
+	create
+	getClass
+</pre>
+<p>The following are keywords that are defined in <i>BasicIO</i>:</p>
+<pre>
+	close
+	eof
+	open
+	println
+	read
+	readln
+	write	
+</pre>
+</section>
+</page>
+</doclite>
+

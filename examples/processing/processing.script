@@ -1,0 +1,15 @@
+<html>
+<head><title>Testing</title>
+<body>
+<p>A Table from FScript</p>
+<table border='1'>
+%int a
+%while a<11
+%	write("<tr><td>",a,"</td><td>",a*5,"</td></tr>")
+%	a=a+1
+%endwhile
+</table>
+<p>Back to the file</p>
+</body>
+</html>
+

@@ -1,0 +1,14 @@
+##Test script for fast extensions
+#Note this script is _suposed_ to cause an error with it's last line
+
+println("\nPrinting 10 random numbers")
+int n
+while n<10
+	println(rand(10.0))
+	n=n+1
+endwhile
+
+println("\nPrinting PI")
+println(pi)
+println("\nThis should cause an error - we try to set pi")
+pi=4.13165

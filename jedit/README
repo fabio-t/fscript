@@ -1,0 +1,7 @@
+
+fscript.xml is a simple edit mode for jEdit (www.jedit.org).  It provides
+some syntax coloring for fscript scripts.  I use it with jedit 4.2pre14 and
+I am unsure if it will work with other versions.
+
+Consult the jEdit help for edit mode installation instructions.
+

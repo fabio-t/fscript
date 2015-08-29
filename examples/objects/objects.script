@@ -1,0 +1,65 @@
+##Example script to demonstate various things that can be done
+##with Java objects via FScript.
+
+object out,out2,system,map,f,fb,obj
+string s
+int n
+
+#Setup system and out classes (for output)
+system=getClass("java.lang.System")
+out=system.out
+out2=out
+
+#First test - using System.out.println
+out.println("Hello this is the first test")
+out2.println("This is a test too")
+
+#now create a hashmap
+map=create("java.util.HashMap")
+map.put("a","Apple")
+map.put("b","Bear")
+map.put("c","Car")
+map.put("d","Demolition")
+
+s=map.get("a")
+out.println(s)
+s=map.get("d")
+out.println(s)
+
+#Create out test object
+obj=create("TestObject")
+obj.testMethod()
+out.println(obj.stringField)
+out.println(obj.intField)
+out.println(obj.intMethod("5551212"))
+
+#Set a field using explicit call
+obj.setValue("Test value for object")
+#But we could do this which is equiv to the setValue call
+#obj.Value="Test value for object" 
+
+#get value using the implicit getter
+out.println(obj.Value)
+#however we could have done this
+#out.println(obj.getValue())
+
+#now write to a file
+f=create("java.io.FileWriter","written.file")
+
+while n<5
+	f.write("This is a line written to a file\n")
+	n=n+1
+endwhile
+f.close()
+
+#Set f to null
+f=null
+f=create("java.io.FileReader","written.file")
+fb=create("java.io.BufferedReader",f)
+
+out.println("Read one line from a file")
+out.println(fb.readLine())
+
+#Static call to currentTimeMillis
+out.println("Static call currentTimeMillis is...")
+out.println(system.currentTimeMillis())

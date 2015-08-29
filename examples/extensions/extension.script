@@ -1,0 +1,12 @@
+HelloWorld()
+var1["test"]=100
+var2[100]="fred"
+
+int a
+
+a=0
+while a<10
+	test[a]=a*20
+	a=a+1
+endwhile
+a=test[a]

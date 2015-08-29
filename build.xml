@@ -1,0 +1,110 @@
+<project name="FScript" default="compile" basedir=".">
+    <description>
+        FScript build file (based on ant example)
+    </description>
+  <!-- set global properties for this build -->
+  <property name="src" location="src"/>
+  <property name="build" location="build"/>
+  <property name="jdoc"  location="docs/doc"/>
+
+  <target name="init">
+    <!-- Create the time stamp -->
+    <tstamp/>
+    <!-- Create the build directory structure used by compile -->
+    <mkdir dir="${build}"/>
+  </target>
+
+  <target name="compile" depends="init"
+        description="compile the source " >
+    <!-- Compile the java code from ${src} into ${build} -->
+    <javac 
+	srcdir="${src}" 
+	destdir="${build}"
+	optimize="on"
+    />
+  </target>
+
+  <target name="jar" depends="compile"
+        description="generate jar file" >
+   
+    <!-- Put FScript.jar file -->
+    <jar jarfile="FScript.jar" basedir="${build}" compress="false"/>
+  </target>
+  
+  <target name="jdoc" description="generates java doc">
+  	<javadoc
+		sourcepath="${src}" 
+		destdir="${jdoc}"
+		packagenames="murlen.util.fscript.*"
+                excludepackagenames="murlen.util.fscript.introspection.*"
+	/> 
+  </target>
+  
+  <target 
+  	name="maketests" 
+	description="build tests"
+	depends="compile">
+
+	<javac
+		srcdir="."
+		classpath="${build}"
+		excludes="src/**"
+	/>
+  </target>
+  
+  <target
+  	name="test"
+	description="Run the tests"
+	depends="maketests">
+	
+	<java
+		classname="FSTest"
+		classpath="${build}:${java.class.path}:.">
+		<arg value="regtest.script"/>
+	</java>
+	
+  </target>
+  
+  <target 
+	name="light" 
+	depends="compile" 
+	description="buiilds a light weight jar file (just the core language)">
+	<jar
+		jarfile="FScript-Light.jar"
+		basedir="${build}" 
+	 	compress="false" 
+		includes="murlen/util/fscript/BasicExtension.class,
+			  murlen/util/fscript/ETreeNode.class,
+			  murlen/util/fscript/FSArrayExtension.class,
+			  murlen/util/fscript/FSException.class,
+			  murlen/util/fscript/FSExtension.class,
+			  murlen/util/fscript/FSFastExtension.class,
+			  murlen/util/fscript/FSFunctionExtension.class,
+			  murlen/util/fscript/FSObject.class,
+			  murlen/util/fscript/FSUnsupportedException.class,
+			  murlen/util/fscript/FSVarExtension.class,
+			  murlen/util/fscript/FScript.class.
+			  murlen/util/fscript/LexAnn.class,
+			  murlen/util/fscript/LineLoader.class,
+			  murlen/util/fscript/Parser*.class,
+			  murlen/util/fscript/FScript.class
+			  "
+	/>
+	
+  </target>
+  
+
+  <target name="clean"
+        description="clean up" >
+    <!-- Delete the ${build} directory tree -->
+    <delete dir="${build}"/>
+    <delete>
+	<fileset dir="." includes="**/*.class"/>
+    </delete>
+  </target>
+  
+  <target name="theworks"
+  	description="Do Everything"
+	depends="clean,jar,jdoc,test"/>
+</project>
+

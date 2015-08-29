@@ -1,0 +1,259 @@
+<html>
+<head><title>Language</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="style"/>
+</head>
+<body>
+<center><h2>FScript</h2>
+<i>by murlen</i>
+</center>
+<a href="page2.html">[Previous]</a>&nbsp;<a href="index.html">[Contents]</a>&nbsp;<a href="page4.html">[Next]</a><hr></hr>
+
+<h2>Language</h2>
+
+
+<a name="link0"></a><h4>Overview</h4>
+
+<p>The FScript language is very simple it supports four data types int (Integer), 
+string (String), double (Double) and a special type object (see later for documentation
+on the 'object' type..
+The language is case sensitive, and both variables and functions need to be declared 
+before use.</p>
+
+
+
+<a name="link1"></a><h4>Comments</h4>
+
+<p>In normal scripting language fashion comments are indicated by a
+ '#' - this may either start a line, in which case the entire line is regarded
+as a comment, or be placed anywhere in the line - in which case any characters
+after the '#' are ignored.</p>
+
+
+
+<a name="link2"></a><h4>Variable Declaration</h4>
+
+<p>Variables must be declared before use, the syntax is :</p>
+
+<pre>int|string|double &lt;varname&gt;[=&lt;expression&gt;][,&lt;varname&gt;*]</pre>
+
+<p>For example</p>
+
+<pre>
+	int counter,b,n
+	string name,address
+	double value
+</pre>
+
+<p>It is also possible to assign a value to a variable during 
+declaration (like java) for example:</p>
+
+<pre>
+	int counter=0,b,c
+	string link,path="/home/"+username+"/mydir",tmpstring
+</pre>
+
+<p>Variable names must start with A-Z or a-z, but numbers, "." and "_" can also used
+in variable names e.g</p>
+
+<pre>	int valid9_variable.name1</pre>
+
+
+
+<a name="link3"></a><h4>Strings</h4>
+
+<p>Strings are enclosed in double quotes, and may contain the special tokens
+\n, \r, \t, \\ and \"to include a new line, carriage return, tab, backslash and double quote
+character respectively.</p>
+
+<p>Line continuation can be indicated by ... e.g.</p>
+
+<pre>
+	a=thisLongNamedVariable+thatLongNamedVariable/...
+	anotherLongNamedVariable
+</pre>
+
+
+
+<a name="link4"></a><h4>Conditional Execution</h4>
+
+<p>The sole construct for conditional execution is the 'if' statement.</p>
+
+<p>There are two forms of 'if' statements, multi line and single line.
+Multi-line If statements may optionally contain 'elsif' and 'else'clauses.  
+The 'then' keyword is optional for the multi-line form of 'if' The syntax is :</p>
+
+<pre>
+	if &lt;expression&gt; [then]
+&lt;statements&gt;
+	[else
+&lt;statements&gt;
+	]
+	[elsif &lt;expression&gt;
+&lt;statements&gt;]
+	endif
+</pre>
+
+<p>For example</p>
+
+<pre>
+	if a&gt;300 
+		a=a-145
+		b=b+3
+	elsif a &gt; 500
+		a=a-245
+		b=b+4
+	else
+		a=a+10
+	endif
+</pre>
+
+<p>The single line form of 'if' is used if only one statement needs to be executed by the 'if'.
+There is no provision for 'else' or 'elsif' and the 'then' keyword is <b>not</b>
+ optional.</p>
+
+<p>For example:</p>
+
+<pre>
+	if a&gt;300 then a=0
+</pre>
+
+<p>Note that both <i>elsif</i>
+ and <i>elseif</i>
+ are valid for use in <i>if</i>
+ statements.</p>
+
+
+
+<a name="link5"></a><h4>Loops</h4>
+
+<p>The only loop construct supported by FScript is while.  The syntax is :</p>
+
+<pre>
+	while &lt;expression&gt;
+&lt;statements&gt;
+	endwhile
+</pre>
+
+<p>For example</p>
+
+<pre>
+	while count&lt;500
+		count=count+1
+		value=value+calcvalue(count)
+	endwhile
+</pre>
+
+
+
+<a name="link6"></a><h4>Functions</h4>
+
+<p>FScript supports the declaration of functions that may return a
+parameter, and accept a pre-defined set of parameters.  Functions may
+be recursive.  It is not legal to nest functions in code (i.e. declare
+functions within functions).  Local variables may be declared within
+the function scope.  Within a function global scope variables are available,
+and in the event of a naming conflict between the global and local scope, the
+local scope wins. The 'return' keyword can be used to return a value to
+the calling code.<br></br>
+
+The syntax of a function declaration is:
+</p>
+
+<pre>
+	func &lt;function name&gt;([[&lt;param type&gt;&lt;param name&gt;][,]]*)
+&lt;statements&gt;
+	endfunc
+</pre>
+
+<p>For example</p>
+
+<pre>
+	func test(int a,string b,double c)
+		int count
+		while count&lt;10
+			count=count+1
+		endwhile
+		return count
+	endfunc
+</pre>
+
+
+
+<a name="link7"></a><h4>Arrays</h4>
+
+<p>FScript does not directly support arrays, however it does support array like
+access to variables that are defined in extensions/subclasses of FScript 
+The syntax is the same as that found in Java (and C). e.g.</p>
+
+<pre>&lt;varname&gt;[&lt;subscript&gt;] </pre>
+
+<p>However in FScript the subscript can be any supported variable type (string,int or
+even double - although I doubt that has many uses).</p>
+
+<p>For Example:</p>
+
+<pre>
+	thisvar[n]=thatvar[2]
+	MyFunction(thisvar[n+1]) </pre>
+
+<p>In the above example the variables <i>thisvar</i>
+ and <i>thatvar</i>
+ are
+supplied by the application embedding FScript</p>
+
+
+
+<a name="link8"></a><h4>Operators</h4>
+
+<p>The usual selection of math and logic operators are supported:<br></br>
+</p>
+
+<pre>+ - * / % == != &gt;= &lt;= &lt;&gt;&& || ! ( ) </pre>
+
+<p>As of FScript 0.8 operator priority is recognized so constructs
+like 3+4*7 will work as expected.</p>
+
+<p>Not all operators are valid for all types</p>
+
+<p>The mathematical operators (+ - * / %) are valid for 
+all numeric types. The operator + is also valid for string operands
+(which concatenates the strings).</p>
+
+<p>The equality & inequality operators ( == !=) are valid for
+all types.  These operators yield an integer 1 or 0 as a result.  All
+logical operators use the 'C' convention of false being zero and 
+true being any non-zero value.</p>
+
+<p>The comparison operators ( &gt;&lt;&gt;= &lt;=) can be used to
+compare any type, again as long as both operands are the same type. 
+ The result is (again) a 1 or 0 integer.</p>
+
+<p>The boolean logic operators ( && || ) work only with integer operands.</p>
+
+
+
+<a name="link9"></a><h4>Notes</h4>
+
+<p>Carriage returns are significant in FScript, so :</p>
+
+<pre>
+	if a&gt;=100 a=100 endif</pre>
+
+<p>will not work. </p>
+
+<p>Also FScript is somewhat sensitive about the interpretation of numbers, 
+for example '15' will always be interpreted as an integer, and will cause an
+error if it is assigned to a double variable, use '15.0' to force the
+value to be interpreted as a double.</p>
+
+
+
+
+<hr></hr>
+<a href="page2.html">[Previous]</a>&nbsp;<a href="index.html">[Contents]</a>&nbsp;<a href="page4.html">[Next]</a><br></br>
+<i><font size="-2">created with DocLite</font>
+</i>
+
+
+</body>
+</html>

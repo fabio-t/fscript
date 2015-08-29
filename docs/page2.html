@@ -1,0 +1,79 @@
+<html>
+<head><title>Installation</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="style"/>
+</head>
+<body>
+<center><h2>FScript</h2>
+<i>by murlen</i>
+</center>
+<a href="page1.html">[Previous]</a>&nbsp;<a href="index.html">[Contents]</a>&nbsp;<a href="page3.html">[Next]</a><hr></hr>
+
+<h2>Installation</h2>
+
+
+<a name="link0"></a><h4>Installation</h4>
+
+
+<p>FScript is supplied as a gzipped tar file.  Under a suitable Unix it 
+can be extracted with the command <i> tar -xvzf FScript.tgz </i>
+</p>
+
+
+<p> Windows users should find that a utility such as Winzip can handle 
+this file, but they may have to extract the tar file, rename it with a 
+.tar extension and then use Winzip (or the like) again</p>
+
+
+<p>FScript is a component that is not really useful as a stand alone language,
+hence the method of installation is typically up to you - the source files
+are located in the 'murlen' directory, the class files in the class directory, and
+there should be a .jar file suitable for inclusion in you CLASSPATH in the
+top level directory.  The documentation, including javadoc, is in the docs
+directory.</p>
+
+
+<p><a href="http://jakarta.apache.org/ant">Ant</a>
+ is the preferred build tool 
+for compiling the code (should you wish to do so).  There are a number of 
+targets:
+<br></br>
+all - makes all source files (if needed)
+<br></br>
+clean - removes class files
+<br></br>
+jar - builds the jar file
+<br></br>
+jdoc - rebuilds the javadoc
+<br></br>
+test - runs java FSTest regtest.script (system self test)
+<br></br>
+theworks - rebuilds everything (runs clean,all,jar,jdoc,test)
+</p>
+
+<p>There is also a Makefile, which currently has the same targets, but
+make is being phased out in favor of Ant, so in future versions the
+Makefile may not exist.</p>
+
+
+<p>There is a test FScript script (regtest.script) which is intended to 
+exercise most if not all of the language.  
+This can be executed by running <i> java FSTest regtest.script </i>
+.
+</p>
+
+<p>There are some (very simple) examples of FScript use in the 
+<i>examples</i>
+ directory (and subdirectories).</p>
+
+
+
+
+
+<hr></hr>
+<a href="page1.html">[Previous]</a>&nbsp;<a href="index.html">[Contents]</a>&nbsp;<a href="page3.html">[Next]</a><br></br>
+<i><font size="-2">created with DocLite</font>
+</i>
+
+
+</body>
+</html>
