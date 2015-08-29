@@ -19,3 +19,7 @@ The only requirement is a Java 2 runtime environment.
 It is licensed under the LGPL.
 
 See the 'docs' directory for more information.
+
+# Note
+
+Since I think Sourceforge days are well past, I've decided to fork/save this little language implementation for posterity. I'll play around with it and will try to maintain it, if it meets my needs.
