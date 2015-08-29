@@ -1,16 +1,11 @@
-FScript
-=======
+# FScript
 
-FScript is an extremely simple scripting language.  
-Its intended use is as an embedded language in other Java programs.  
-It is not a complete programming language. If you need one of these I suggest
-you look at:
+[FScript](http://fscript.sourceforge.net) is an extremely simple scripting language.
 
-	JPython - 	http://www.jpython.org - an implementation 
-				of the excellent Python language in Java.
+Its intended use is as an embedded language in other Java programs. It is not a complete programming language. If you need one of these I suggest you look at:
 
-	Rhino - 	http://www.mozilla.org/rhino - an implementation
-				of JavaScript in Java.
+* [JPython](http://www.jpython.org): an implementation of the excellent Python language in Java.
+* [Rhino](http://www.mozilla.org/rhino): an implementation of JavaScript in Java.
 
 Both of these are also fully embedable, and have sane licenses.
 
